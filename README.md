@@ -59,6 +59,13 @@ The makefile is portable across GNU make and bmake: no pattern rules, no
 `ifeq`/`.if` conditionals, no `$(shell)`, with per-config flags in
 `make/<CONFIG>.mk`.
 
+There is also a `cf_cmds.xcodeproj` with one target per tool, for building and
+debugging from Xcode. It is generated to match the sibling projects rather than
+hand-maintained: same `FEEDFACE…` object identifiers, same `Debug`/`Release`
+configurations, same `-std=c11 -D_DARWIN_C_SOURCE` flags as the makefile, and
+the same `build/debug`, `build/release` and `build/obj/…` output layout, so the
+two build systems can be used interchangeably.
+
 Both tools link only CoreFoundation and libSystem, which is what the shipped
 binaries' load commands show. In particular `cfprefsd` does *not* link
 Foundation or CoreServices.
@@ -84,7 +91,9 @@ the shipped binary rather than a runtime diff.
 failure paths and their log messages. The daemon it tail-calls into —
 `__CFXPreferencesDaemon_main`, the `CFPrefs*` and `CFPD*` classes, and the XPC
 protocol they speak — is CoreFoundation code, not `cfprefsd` code, and is not
-part of the published CF source drop. See `local/cf_cmds.md`.
+part of the published CF source drop. It is being written into `src/CF` so
+that the shim's import table stays identical to Apple's; the shim will link
+against the rebuilt CoreFoundation rather than resolve the entry point locally.
 
 ## Licence
 
