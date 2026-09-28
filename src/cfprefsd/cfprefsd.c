@@ -41,7 +41,7 @@ __attribute__((noinline)) static void log_apply_failed(os_log_t log) {
     os_log_fault(log, "Failure to configure quarantine: qtn_proc_apply_to_self() failed. Exiting daemon.");
 }
 
-static void census_quarantine_setup(void) {
+__attribute__((noinline)) static void census_quarantine_setup(void) {
     os_log_t log = os_log_create("com.apple.defaults", "cfprefsd");
     void *proc = _qtn_proc_alloc();
 

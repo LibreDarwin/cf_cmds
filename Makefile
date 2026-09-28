@@ -54,14 +54,23 @@ $(OBJDIR)/cfprefsd.o: src/cfprefsd/cfprefsd.c
 	$(CC) $(CFLAGS) -c -o $@ src/cfprefsd/cfprefsd.c
 
 test: all
-	@echo "No tests defined yet"
+	sh tools/parity.sh $(UUIDGEN)
+
+MAN1 := man/uuidgen.1
+MAN8 := man/cfprefsd.8
 
 install: all
-	install -d $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/sbin
+	install -d $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/sbin \
+		$(DESTDIR)$(PREFIX)/share/man/man1 $(DESTDIR)$(PREFIX)/share/man/man8
 	install -m 0755 $(UUIDGEN) $(DESTDIR)$(PREFIX)/bin/uuidgen
 	install -m 0755 $(CFPREFSD) $(DESTDIR)$(PREFIX)/sbin/cfprefsd
+	install -m 0444 $(MAN1) $(DESTDIR)$(PREFIX)/share/man/man1/uuidgen.1
+	install -m 0444 $(MAN8) $(DESTDIR)$(PREFIX)/share/man/man8/cfprefsd.8
+
+man:
+	@echo "Rendering $(MAN1) and $(MAN8) is left to mandoc/groff at install time."
 
 clean:
 	rm -rf build
 
-.PHONY: all test install clean
+.PHONY: all test man install clean
